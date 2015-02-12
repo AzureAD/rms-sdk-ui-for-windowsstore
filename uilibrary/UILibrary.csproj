@@ -1,0 +1,178 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <MinimumVisualStudioVersion>12.0</MinimumVisualStudioVersion>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{77EE9087-5D6E-40B8-98CB-32DAC305FA9F}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Microsoft.RightsManagement.UILibrary</RootNamespace>
+    <AssemblyName>Microsoft.RightsManagement.UILibrary</AssemblyName>
+    <DefaultLanguage>en-US</DefaultLanguage>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{BC8A1FFA-BEE3-4634-8014-F334798102B3};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <TargetPlatformIdentifier>Windows</TargetPlatformIdentifier>
+    <TargetPlatformVersion>8.1</TargetPlatformVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_APP</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_APP</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="LocalizedStrings.cs" />
+    <Compile Include="Permission.cs" />
+    <Compile Include="PermissionsFlyout.xaml.cs">
+      <DependentUpon>PermissionsFlyout.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ProtectionFlyout.cs" />
+    <Compile Include="UIUtils.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="PermissionsFlyout.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Include="Resources\bg-BG\LibResources.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Include="Resources\sv-SE\LibResources.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Include="Resources\th-TH\LibResources.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Include="Resources\tr-TR\LibResources.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Include="Resources\uk-UA\LibResources.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Include="Resources\vi-VN\LibResources.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Include="Resources\zh-CN\LibResources.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Include="Resources\zh-TW\LibResources.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Include="Resources\cs-CZ\LibResources.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Include="Resources\da-DK\LibResources.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Include="Resources\de-DE\LibResources.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Include="Resources\el-GR\LibResources.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Include="Resources\en-US\LibResources.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Include="Resources\es-ES\LibResources.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Include="Resources\et-EE\LibResources.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Include="Resources\fi-FI\LibResources.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Include="Resources\fr-FR\LibResources.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Include="Resources\hi-IN\LibResources.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Include="Resources\hr-HR\LibResources.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Include="Resources\hu-HU\LibResources.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Include="Resources\id-ID\LibResources.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Include="Resources\it-IT\LibResources.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Include="Resources\ja-JP\LibResources.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Include="Resources\kk-KZ\LibResources.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Include="Resources\ko-KR\LibResources.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Include="Resources\lt-LT\LibResources.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Include="Resources\lv-LV\LibResources.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Include="Resources\ms-MY\LibResources.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Include="Resources\nb-NO\LibResources.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Include="Resources\nl-NL\LibResources.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Include="Resources\pl-PL\LibResources.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Include="Resources\pt-BR\LibResources.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Include="Resources\pt-PT\LibResources.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Include="Resources\ro-RO\LibResources.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Include="Resources\ru-RU\LibResources.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Include="Resources\sk-SK\LibResources.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Include="Resources\sl-SI\LibResources.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Include="Resources\sr-Latn-CS\LibResources.resw" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
