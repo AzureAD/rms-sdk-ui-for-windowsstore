@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using Windows.Foundation;
-using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
+// ReSharper disable All
 
 namespace Microsoft.RightsManagement.UILibrary
 {
@@ -21,41 +19,34 @@ namespace Microsoft.RightsManagement.UILibrary
             // Initialize if needed, i.e. listen to various events, set up the animation
             Initialize();
 
-            // The popup is not dismissed when an appbar is opened or close. So we need to listen to appbar close/open events manually to dismiss our popup.
-            _allAppBars = this.GetAllAppBarsInApp();
-
-            foreach (var appBar in _allAppBars)
+            if (HostingPage != null)
             {
-                appBar.Opened += DismissPopup;
-                appBar.Closed += DismissPopup;
+                AddDismissListners(HostingPage.TopAppBar);
+                AddDismissListners(HostingPage.BottomAppBar);
             }
 
-            this.UpdateFlyoutGeometry();
+            UpdateFlyoutGeometry();
 
             // Start the update geometry timer to update the geometry periodically
             _updateFlyoutGeometryTimer.Start();
 
-            if (this.IsAutoDismissEnabled)
+            if (IsAutoDismissEnabled)
             {
                 // if auto dismiss is enabled start the dismiss timer
                 _dismissTimer.Start();
             }
 
-            this.Popup.IsOpen = true;
+            Popup.IsOpen = true;
 
             return true;
         }
 
         protected void Hide()
         {
-            this.Popup.IsOpen = false;
+            Popup.IsOpen = false;
         }
 
-        public bool IsAutoDismissEnabled
-        {
-            get;
-            set;
-        }
+        public bool IsAutoDismissEnabled {get; set;}
 
         public event RoutedEventHandler Closed;
 
@@ -72,14 +63,14 @@ namespace Microsoft.RightsManagement.UILibrary
                 _dismissTimer.Tick += _dismissTimer_Tick;
 
                 // Add the open/close animation
-                this.Popup.ChildTransitions = new TransitionCollection();
-                this.Popup.ChildTransitions.Add(new PaneThemeTransition() { Edge = EdgeTransitionLocation.Right} );
+                Popup.ChildTransitions = new TransitionCollection();
+                Popup.ChildTransitions.Add(new PaneThemeTransition() { Edge = EdgeTransitionLocation.Right} );
 
                 // Handle Closed event for cleanup
-                this.Popup.Closed += Popup_Closed;
+                Popup.Closed += Popup_Closed;
 
                 // Intercept the right click block opening/closing app bar when right clicking on the popup
-                this.Child.RightTapped += Child_RightTapped;
+                Child.RightTapped += Child_RightTapped;
 
                 _initialized = true;
             }
@@ -88,10 +79,10 @@ namespace Microsoft.RightsManagement.UILibrary
         private void Popup_Closed(object sender, object e)
         {
             // Unregister the appbar open/close handlers
-            foreach (var appBar in _allAppBars)
+            if (HostingPage != null)
             {
-                appBar.Opened -= DismissPopup;
-                appBar.Closed -= DismissPopup;
+                RemoveDismissListners(HostingPage.TopAppBar);
+                RemoveDismissListners(HostingPage.BottomAppBar);
             }
 
             // Stop the update geometry timer
@@ -100,9 +91,9 @@ namespace Microsoft.RightsManagement.UILibrary
             // Stop the dismiss timer
             _dismissTimer.Stop();
 
-            if (this.Closed != null)
+            if (Closed != null)
             {
-                this.Closed(this, new RoutedEventArgs());
+                Closed(this, new RoutedEventArgs());
             }
         }
 
@@ -110,107 +101,78 @@ namespace Microsoft.RightsManagement.UILibrary
         {
             var windowRect = Window.Current.Bounds;
 
-            var flyoutRect = new Rect 
-            {
-                X = windowRect.Width - FlyoutWidth,
-                Y = 0.0,
-                Width = FlyoutWidth,
-                Height = windowRect.Height
-            };
+            Rect flyoutRect;
+            var elem = windowRect.Width - FlyoutWidth;
 
-            foreach (var appBar in _allAppBars)
+            if (elem > 0)
             {
-                if (appBar.IsOpen)
+                flyoutRect = new Rect
                 {
-                    var appBarPosition = appBar.TransformToVisual(null).TransformPoint(new Point(0, 0));
-                    var appBarRect = new Rect(appBarPosition, appBar.RenderSize);
+                    X = elem,
+                    Y = 0.0,
+                    Width = FlyoutWidth,
+                    Height = windowRect.Height
+                };
+            }
+            else
+            {
+                flyoutRect = new Rect
+                {
+                    X = 0.0,
+                    Y = 0.0,
+                    Width = windowRect.Width,
+                    Height = windowRect.Height
+                };
+            }
+            if (HostingPage != null)
+            {
+                if ((HostingPage.TopAppBar != null ) && (HostingPage.TopAppBar.IsOpen))
+                {
+                    var appBarRect = GetRectAppBar(HostingPage.TopAppBar);
+                    // If the flyout overlaps with the appbar, move the flyout's top to the bottom of the appbar, such that it doesn't overlap 
+                    flyoutRect.Height = flyoutRect.Height - (appBarRect.Bottom - flyoutRect.Top);
+                    flyoutRect.Y = appBarRect.Bottom;                    
+                }
 
-                    // If the top of the app bar is < 3 then we assume that it is a top app bar.
-                    // If the bottom of the app bar is > screen height - 3, then we assume that it is a bottom app bar.
-                    const double tolerance = 3;
+                if ((HostingPage.BottomAppBar != null) && (HostingPage.BottomAppBar.IsOpen))
+                {
+                    var appBarRect = GetRectAppBar(HostingPage.TopAppBar);
 
-                    if (appBarPosition.Y <= tolerance)
+                    if (flyoutRect.Bottom > appBarRect.Top)
                     {
-                        // If this is a top app bar make sure that the upper part of the flyout doesn't overlap with the app bar
-
-                        if (flyoutRect.Top < appBarRect.Bottom)
-                        {
-                            // If the flyout overlaps with the appbar, move the flyout's top to the bottom of the appbar, such that it doesn't overlap 
-                            flyoutRect.Height = flyoutRect.Height - (appBarRect.Bottom - flyoutRect.Top);
-                            flyoutRect.Y = appBarRect.Bottom;
-                        }
-                    }
-                    else if (appBarRect.Bottom >= windowRect.Height - tolerance)
-                    {
-                        // If this is a bottom app bar make sure that the lower part of the flyout doesn't overlap with the app bar
-
-                        if (flyoutRect.Bottom > appBarRect.Top)
-                        {
-                            // If the flyout overlaps with the appbar, move the flyout's bottom to the top of the appbar, such that it doesn't overlap 
-                            flyoutRect.Height = flyoutRect.Height - (flyoutRect.Bottom - appBarRect.Top);
-                        }
+                        // If the flyout overlaps with the appbar, move the flyout's bottom to the top of the appbar, such that it doesn't overlap 
+                        flyoutRect.Height = flyoutRect.Height - (flyoutRect.Bottom - appBarRect.Top);
                     }
                 }
             }
 
-            this.Popup.HorizontalOffset = flyoutRect.Left;
-            this.Popup.VerticalOffset = flyoutRect.Top;
+            Popup.HorizontalOffset = flyoutRect.Left;
+            Popup.VerticalOffset = flyoutRect.Top;
 
-            this.Popup.Width = flyoutRect.Width;
-            this.Popup.Height = flyoutRect.Height;
+            Popup.Width = flyoutRect.Width;
+            Popup.Height = flyoutRect.Height;
 
-            this.Child.Width = flyoutRect.Width;
-            this.Child.Height = flyoutRect.Height;
+            Child.Width = flyoutRect.Width;
+            Child.Height = flyoutRect.Height;
         }
 
         private void DismissPopup(object sender, object e)
         {
-            this.Popup.IsOpen = false;
+            Popup.IsOpen = false;
         }
 
-        private List<AppBar> GetAllAppBarsInApp()
-        {
-            var appBars = new List<AppBar>();
-            this.GetAllAppBars(Window.Current.Content, appBars);
-            return appBars;
-        }
-
-        private void GetAllAppBars(DependencyObject root, List<AppBar> appBars)
-        {
-            var page = root as Page;
-
-            // If the root is a page add its app bars to the list
-            if (page != null)
-            {
-                if (page.BottomAppBar != null)
-                {
-                    appBars.Add(page.BottomAppBar);
-                }
-
-                if (page.TopAppBar != null)
-                {
-                    appBars.Add(page.TopAppBar);
-                }
-            }
-
-            // Call this function recursively for the children of the root
-            int childrenCount = VisualTreeHelper.GetChildrenCount(root);
-            for (int i = 0; i < childrenCount; i++)
-            {
-                this.GetAllAppBars(VisualTreeHelper.GetChild(root, i), appBars);
-            }
-        }
+        public Page HostingPage {get; set; }
 
         private void _updateGeometryTimer_Tick(object sender, object e)
         {
-            this.UpdateFlyoutGeometry();
+            UpdateFlyoutGeometry();
         }
 
         private void _dismissTimer_Tick(object sender, object e)
         {
-            if (this.Popup.IsOpen)
+            if (Popup.IsOpen)
             {
-                this.Hide();
+                Hide();
             }
         }
 
@@ -224,7 +186,7 @@ namespace Microsoft.RightsManagement.UILibrary
         {
             get
             {
-                return base.Content as Popup;
+                return Content as Popup;
             }
         }
 
@@ -232,13 +194,35 @@ namespace Microsoft.RightsManagement.UILibrary
         {
             get
             {
-                return this.Popup.Child as FrameworkElement;
+                return Popup.Child as FrameworkElement;
             }
         }
 
+        private Rect GetRectAppBar(AppBar app)
+        {
+            var appBarPosition = app.TransformToVisual(null).TransformPoint(new Point(0, 0));
+            return new Rect(appBarPosition, app.RenderSize);
+        }
+
+        private void AddDismissListners(AppBar app)
+        {
+            if (app != null)
+            {
+                app.Closed += DismissPopup;
+                app.Opened += DismissPopup;
+            }
+        }
+
+        private void RemoveDismissListners(AppBar app)
+        {
+            if (app != null)
+            {
+                app.Closed -= DismissPopup;
+                app.Opened -= DismissPopup;
+            }
+        }
 
         private bool _initialized = false;
-        private List<AppBar> _allAppBars = null;
         readonly private DispatcherTimer _updateFlyoutGeometryTimer = new DispatcherTimer();
         readonly private DispatcherTimer _dismissTimer = new DispatcherTimer();
 
