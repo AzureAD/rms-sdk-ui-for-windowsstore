@@ -8,14 +8,14 @@ namespace Microsoft.RightsManagement.UILibrary
     public sealed partial class PermissionsFlyout : ProtectionFlyout
     {
         private bool _isOpen = false;
-        static private List<string> SupportedRights = new List<string>();
-        private List<Permission> _permissions = null;
-        private UserPolicy _policy = null;
+        static private readonly List<string> SupportedRights = new List<string>();
+        private List<Permission> _permissions;
+        private UserPolicy _policy;
 
         static PermissionsFlyout()
         {
             SupportedRights.Add(CommonRights.View);
-            // For demonstration purposes, rights are not necessirily enforced / used in this sample.
+            // For demonstration purposes, rights are not necessarily enforced / used in this sample.
             SupportedRights.Add(EditableDocumentRights.Edit); 
             SupportedRights.Add(EditableDocumentRights.Print); 
             SupportedRights.Add(EditableDocumentRights.Extract);
@@ -23,7 +23,7 @@ namespace Microsoft.RightsManagement.UILibrary
 
         public PermissionsFlyout()
         {
-            this.InitializeComponent();
+            InitializeComponent();
             Closed += PermissionsFlyout_Closed;
         }
 
@@ -61,11 +61,11 @@ namespace Microsoft.RightsManagement.UILibrary
             {
                 if (value && _policy != null)
                 {
-                    this.Show();
+                    Show();
                 }
                 else
                 {
-                    this.Hide();
+                    Hide();
                 }
             }
         }
@@ -118,7 +118,7 @@ namespace Microsoft.RightsManagement.UILibrary
                 _permissionsListView.ItemsSource = _permissions;
             }
 
-            this.UpdateGrantedByTextBlockWidth();
+            UpdateGrantedByTextBlockWidth();
         }
 
         private void UpdateGrantedByTextBlockWidth()
