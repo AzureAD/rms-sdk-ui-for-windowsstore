@@ -4,7 +4,6 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Media.Animation;
-// ReSharper disable All
 
 namespace Microsoft.RightsManagement.UILibrary
 {
@@ -102,13 +101,13 @@ namespace Microsoft.RightsManagement.UILibrary
             var windowRect = Window.Current.Bounds;
 
             Rect flyoutRect;
-            var elem = windowRect.Width - FlyoutWidth;
+            var offsetWidth = windowRect.Width - FlyoutWidth;
 
-            if (elem > 0)
+            if (offsetWidth > 0)
             {
                 flyoutRect = new Rect
                 {
-                    X = elem,
+                    X = offsetWidth,
                     Y = 0.0,
                     Width = FlyoutWidth,
                     Height = windowRect.Height
@@ -131,7 +130,7 @@ namespace Microsoft.RightsManagement.UILibrary
                     var appBarRect = GetRectAppBar(HostingPage.TopAppBar);
                     // If the flyout overlaps with the appbar, move the flyout's top to the bottom of the appbar, such that it doesn't overlap 
                     flyoutRect.Height = flyoutRect.Height - (appBarRect.Bottom - flyoutRect.Top);
-                    flyoutRect.Y = appBarRect.Bottom;                    
+                    flyoutRect.Y = appBarRect.Bottom;
                 }
 
                 if ((HostingPage.BottomAppBar != null) && (HostingPage.BottomAppBar.IsOpen))
